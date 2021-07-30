@@ -8,4 +8,4 @@ this version after refactoring By:
 * Return Early.
 * Solving Mayfly Variables.
 * Assign meaningful names.
-* reduce complexity and raise "Tell, Don't ask" rule. 
+* Reduce complexity and raise "Tell, Don't ask" rule. 
