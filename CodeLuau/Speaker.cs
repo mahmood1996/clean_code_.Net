@@ -29,31 +29,53 @@ namespace CodeLuau
 		
 		public RegisterResponse Register(IRepository repository)
 		{
-			var error = ValidateRegisteration();
-			if (error != null) return new RegisterResponse(error);
+            try
+            {
+				return RegisterSpeaker(repository);
+			}
+			catch(RegisterException exception)
+            {
+				return new RegisterResponse(exception.registerError);
+            }
+		}
+
+
+		private RegisterResponse RegisterSpeaker(IRepository repository)
+        {
+			ValidateRegisteration();
 			AssignApprovmentToSessions();
+			RegistrationFee = RegisterationFeesTable.GetRegisterationFeesByExperience(YearsOfExperience);
 			return SaveSpeakerToRepository(repository);
 		}
 
-		private RegisterError? ValidateRegisteration()
+		private void ValidateRegisteration()
         {
-			if (IsNotValidFirstName())
-				return RegisterError.FirstNameRequired;
-			if (IsNotValidLastName())
-				return RegisterError.LastNameRequired;
-			if (IsNotValidEmail())
-				return RegisterError.EmailRequired;
-			if (IsNotValidSpeaker())
-				return RegisterError.SpeakerDoesNotMeetStandards;
-			if (HasNotSessions())
-				return RegisterError.NoSessionsProvided;
-			if (HasAllOldSessions())
-				return RegisterError.NoSessionsApproved;
-
-			return null;
+			ValidateRegisterationData();
+			ValidateSpeaker();
 		}
 
-		private RegisterResponse SaveSpeakerToRepository(IRepository repository)
+		private void ValidateRegisterationData()
+        {
+			if (IsNotValidFirstName())
+				throw new RegisterException(RegisterError.FirstNameRequired);
+			if (IsNotValidLastName())
+				throw new RegisterException(RegisterError.LastNameRequired);
+			if (IsNotValidEmail())
+				throw new RegisterException(RegisterError.EmailRequired);
+		}
+
+		private void ValidateSpeaker()
+        {
+			if (IsNotValidSpeaker())
+				throw new RegisterException(RegisterError.SpeakerDoesNotMeetStandards);
+			if (HasNotSessions())
+				throw new RegisterException(RegisterError.NoSessionsProvided);
+			if (HasAllOldSessions())
+				throw new RegisterException(RegisterError.NoSessionsApproved);
+		}
+
+
+        private RegisterResponse SaveSpeakerToRepository(IRepository repository)
         {
 			try
 			{
@@ -61,7 +83,7 @@ namespace CodeLuau
 			}
 			catch (Exception error)
 			{
-				return new RegisterResponse(RegisterError.SaveError);
+				throw new RegisterException(RegisterError.SaveError);
 			}
 		}
 
