@@ -1,3 +1,11 @@
-# Demo: Clean Coding Principles in C#
+# Clean Coding Principles in C#
 
-Code demo for "Clean Coding Principles in C#" for Pluralsight
+This is The Final Project called "Code Luau" of this course, it consists of 5 classes and Speaker class is the Business logic,
+this version after refactoring By:
+
+* Extract Method.
+* Fail First.
+* Return Early.
+* Solving Mayfly Variables.
+* Assign meaningful names.
+* Reduce complexity and raise "Tell, Don't ask" rule. 
